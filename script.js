@@ -1,4 +1,18 @@
 (() => {
+  // Strip external campaign/tracking parameters from the visible address bar.
+  // This keeps shared portfolio URLs clean without reloading the page.
+  try {
+    const cleanUrl = new URL(window.location.href);
+    let changed = false;
+    for (const key of [...cleanUrl.searchParams.keys()]) {
+      if (key.toLowerCase().startsWith('utm_')) {
+        cleanUrl.searchParams.delete(key);
+        changed = true;
+      }
+    }
+    if (changed) window.history.replaceState({}, document.title, cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
+  } catch (_) {}
+
   const root = document.documentElement;
   const themeToggle = document.getElementById('themeToggle');
   const menuToggle = document.getElementById('mobileMenuToggle');
